@@ -1,39 +1,147 @@
-#include "boilerplate_plugin.h"
+#include "rocketpool_plugin.h"
 
-// EDIT THIS: Remove this function and write your own handlers!
-static void handle_swap_exact_eth_for_tokens(ethPluginProvideParameter_t *msg, context_t *context) {
+static bool handle_offset(ethPluginProvideParameter_t *msg, context_t *context) {
     if (context->go_to_offset) {
         if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
-            return;
+            return true;
         }
         context->go_to_offset = false;
     }
+    return false;
+}
+
+static void handle_burn(ethPluginProvideParameter_t *msg, context_t *context) {
     switch (context->next_param) {
-        case MIN_AMOUNT_RECEIVED:  // amountOutMin
-            copy_parameter(context->amount_received,
-                           msg->parameter,
-                           sizeof(context->amount_received));
-            context->next_param = PATH_OFFSET;
-            break;
-        case PATH_OFFSET:  // path
-            context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
-            context->next_param = BENEFICIARY;
-            break;
-        case BENEFICIARY:  // to
-            copy_address(context->beneficiary, msg->parameter, sizeof(context->beneficiary));
-            context->next_param = PATH_LENGTH;
-            context->go_to_offset = true;
-            break;
-        case PATH_LENGTH:
-            context->offset = msg->parameterOffset - SELECTOR_SIZE + PARAMETER_LENGTH * 2;
-            context->go_to_offset = true;
-            context->next_param = TOKEN_RECEIVED;
-            break;
-        case TOKEN_RECEIVED:  // path[1] -> contract address of token received
-            copy_address(context->token_received, msg->parameter, sizeof(context->token_received));
+        case BURN__AMOUNT:
+            copy_parameter(&context->selector.burn.amount, msg->parameter, sizeof(context->selector.burn.amount));
             context->next_param = UNEXPECTED_PARAMETER;
             break;
-        // Keep this
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+static void handle_set_withdrawal_address(ethPluginProvideParameter_t *msg, context_t *context) {
+    switch (context->next_param) {
+        case SET_WITHDRAWAL_ADDRESS__NODE_ADDRESS:
+            copy_address(&context->selector.set_withdrawal_address.node_address, msg->parameter, sizeof(context->selector.set_withdrawal_address.node_address));
+            context->next_param = SET_WITHDRAWAL_ADDRESS__NEW_WITHDRAWAL_ADDRESS;
+            break;
+        case SET_WITHDRAWAL_ADDRESS__NEW_WITHDRAWAL_ADDRESS:
+            copy_address(&context->selector.set_withdrawal_address.new_withdrawal_address, msg->parameter, sizeof(context->selector.set_withdrawal_address.new_withdrawal_address));
+            context->next_param = SET_WITHDRAWAL_ADDRESS__CONFIRM;
+            break;
+        case SET_WITHDRAWAL_ADDRESS__CONFIRM:
+            copy_parameter(&context->selector.set_withdrawal_address.confirm, msg->parameter, sizeof(context->selector.set_withdrawal_address.confirm));
+            context->next_param = UNEXPECTED_PARAMETER;
+            break;
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+static void handle_confirm_withdrawal_address(ethPluginProvideParameter_t *msg, context_t *context) {
+    switch (context->next_param) {
+        case CONFIRM_WITHDRAWAL_ADDRESS__NODE_ADDRESS:
+            copy_address(&context->selector.confirm_withdrawal_address.node_address, msg->parameter, sizeof(context->selector.confirm_withdrawal_address.node_address));
+            context->next_param = UNEXPECTED_PARAMETER;
+            break;
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+static void handle_stake_rpl_for(ethPluginProvideParameter_t *msg, context_t *context) {
+    switch (context->next_param) {
+        case STAKE_RPL_FOR__NODE_ADDRESS:
+            copy_address(&context->selector.stake_rpl_for.node_address, msg->parameter, sizeof(context->selector.stake_rpl_for.node_address));
+            context->next_param = STAKE_RPL_FOR__AMOUNT;
+            break;
+        case STAKE_RPL_FOR__AMOUNT:
+            copy_parameter(&context->selector.stake_rpl_for.amount, msg->parameter, sizeof(context->selector.stake_rpl_for.amount));
+            context->next_param = UNEXPECTED_PARAMETER;
+            break;
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+static void handle_stake_rpl(ethPluginProvideParameter_t *msg, context_t *context) {
+    switch (context->next_param) {
+        case STAKE_RPL__AMOUNT:
+            copy_parameter(&context->selector.stake_rpl.amount, msg->parameter, sizeof(context->selector.stake_rpl.amount));
+            context->next_param = UNEXPECTED_PARAMETER;
+            break;
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+static void handle_unstake_rpl(ethPluginProvideParameter_t *msg, context_t *context) {
+    switch (context->next_param) {
+        case UNSTAKE_RPL__AMOUNT:
+            copy_parameter(&context->selector.unstake_rpl.amount, msg->parameter, sizeof(context->selector.unstake_rpl.amount));
+            context->next_param = UNEXPECTED_PARAMETER;
+            break;
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+static void handle_swap_tokens(ethPluginProvideParameter_t *msg, context_t *context) {
+    switch (context->next_param) {
+        case SWAP_TOKENS__AMOUNT:
+            copy_parameter(&context->selector.swap_tokens.amount, msg->parameter, sizeof(context->selector.swap_tokens.amount));
+            context->next_param = UNEXPECTED_PARAMETER;
+            break;
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+static void handle_swap_to(ethPluginProvideParameter_t *msg, context_t *context) {
+    switch (context->next_param) {
+        case SWAP_TO__UNISWAP_PORTION:
+        case SWAP_TO__BALANCER_PORTION:
+        case SWAP_TO__MIN_TOKENS_OUT:
+        case SWAP_TO__IDEAL_TOKENS_OUT:
+            // Skip all these
+            context->next_param++;
+            break;
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+static void handle_swap_from(ethPluginProvideParameter_t *msg, context_t *context) {
+    switch (context->next_param) {
+        case SWAP_FROM__UNISWAP_PORTION:
+        case SWAP_FROM__BALANCER_PORTION:
+        case SWAP_FROM__MIN_TOKENS_OUT:
+        case SWAP_FROM__IDEAL_TOKENS_OUT:
+            // Skip all these
+            context->next_param++;
+            break;
+        case SWAP_FROM__TOKENS_IN:
+            copy_parameter(&context->selector.swap_from.amount, msg->parameter, sizeof(context->selector.swap_from.amount));
+            context->next_param = UNEXPECTED_PARAMETER;
+            break;
         default:
             PRINTF("Param not supported: %d\n", context->next_param);
             msg->result = ETH_PLUGIN_RESULT_ERROR;
@@ -44,6 +152,7 @@ static void handle_swap_exact_eth_for_tokens(ethPluginProvideParameter_t *msg, c
 void handle_provide_parameter(void *parameters) {
     ethPluginProvideParameter_t *msg = (ethPluginProvideParameter_t *) parameters;
     context_t *context = (context_t *) msg->pluginContext;
+
     // We use `%.*H`: it's a utility function to print bytes. You first give
     // the number of bytes you wish to print (in this case, `PARAMETER_LENGTH`) and then
     // the address (here `msg->parameter`).
@@ -54,12 +163,37 @@ void handle_provide_parameter(void *parameters) {
 
     msg->result = ETH_PLUGIN_RESULT_OK;
 
-    // EDIT THIS: adapt the cases and the names of the functions.
     switch (context->selectorIndex) {
-        case SWAP_EXACT_ETH_FOR_TOKENS:
-            handle_swap_exact_eth_for_tokens(msg, context);
+        case DEPOSIT:
+            // No parameters for deposit
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
             break;
-        case BOILERPLATE_DUMMY_2:
+        case BURN:
+            handle_burn(msg, context);
+            break;
+        case SET_WITHDRAWAL_ADDRESS:
+            handle_set_withdrawal_address(msg, context);
+            break;
+        case CONFIRM_WITHDRAWAL_ADDRESS:
+            handle_confirm_withdrawal_address(msg, context);
+            break;
+        case STAKE_RPL_FOR:
+            handle_stake_rpl_for(msg, context);
+            break;
+        case STAKE_RPL:
+            handle_stake_rpl(msg, context);
+            break;
+        case UNSTAKE_RPL:
+            handle_unstake_rpl(msg, context);
+            break;
+        case SWAP_TOKENS:
+            handle_swap_tokens(msg, context);
+            break;
+        case SWAP_TO:
+            handle_swap_to(msg, context);
+            break;
+        case SWAP_FROM:
+            handle_swap_from(msg, context);
             break;
         default:
             PRINTF("Selector Index not supported: %d\n", context->selectorIndex);

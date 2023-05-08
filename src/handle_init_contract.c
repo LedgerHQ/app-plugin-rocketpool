@@ -1,4 +1,4 @@
-#include "boilerplate_plugin.h"
+#include "rocketpool_plugin.h"
 
 static int find_selector(uint32_t selector, const uint32_t *selectors, size_t n, selector_t *out) {
     for (selector_t i = 0; i < n; i++) {
@@ -36,20 +36,52 @@ void handle_init_contract(void *parameters) {
     memset(context, 0, sizeof(*context));
 
     uint32_t selector = U4BE(msg->selector, 0);
-    if (find_selector(selector, BOILERPLATE_SELECTORS, NUM_SELECTORS, &context->selectorIndex)) {
+    if (find_selector(selector, ROCKETPOOL_SELECTORS, NUM_SELECTORS, &context->selectorIndex)) {
         msg->result = ETH_PLUGIN_RESULT_UNAVAILABLE;
         return;
     }
 
     // Set `next_param` to be the first field we expect to parse.
-    // EDIT THIS: Adapt the `cases`, and set the `next_param` to be the first parameter you expect
-    // to parse.
     switch (context->selectorIndex) {
-        case SWAP_EXACT_ETH_FOR_TOKENS:
-            context->next_param = MIN_AMOUNT_RECEIVED;
+        case DEPOSIT:
+            context->next_param = UNEXPECTED_PARAMETER;
+            context->num_screens = 1;
             break;
-        case BOILERPLATE_DUMMY_2:
-            context->next_param = TOKEN_RECEIVED;
+        case BURN:
+            context->next_param = BURN__AMOUNT;
+            context->num_screens = 1;
+            break;
+        case SET_WITHDRAWAL_ADDRESS:
+            context->next_param = SET_WITHDRAWAL_ADDRESS__NODE_ADDRESS;
+            context->num_screens = 3;
+            break;
+        case CONFIRM_WITHDRAWAL_ADDRESS:
+            context->next_param = CONFIRM_WITHDRAWAL_ADDRESS__NODE_ADDRESS;
+            context->num_screens = 1;
+            break;
+        case STAKE_RPL_FOR:
+            context->next_param = STAKE_RPL_FOR__NODE_ADDRESS;
+            context->num_screens = 2;
+            break;
+        case STAKE_RPL:
+            context->next_param = STAKE_RPL__AMOUNT;
+            context->num_screens = 1;
+            break;
+        case UNSTAKE_RPL:
+            context->next_param = UNSTAKE_RPL__AMOUNT;
+            context->num_screens = 1;
+            break;
+        case SWAP_TOKENS:
+            context->next_param = SWAP_TOKENS__AMOUNT;
+            context->num_screens = 1;
+            break;
+        case SWAP_TO:
+            context->next_param = SWAP_TO__UNISWAP_PORTION;
+            context->num_screens = 1;
+            break;
+        case SWAP_FROM:
+            context->next_param = SWAP_FROM__UNISWAP_PORTION;
+            context->num_screens = 1;
             break;
         // Keep this
         default:

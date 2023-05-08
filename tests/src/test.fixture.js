@@ -1,7 +1,7 @@
-import Zemu, { DEFAULT_START_OPTIONS, DeviceModel } from '@zondax/zemu';
+import Zemu, {DEFAULT_START_OPTIONS} from '@zondax/zemu';
 import Eth from '@ledgerhq/hw-app-eth';
-import { generate_plugin_config } from './generate_plugin_config';
-import { parseEther, parseUnits, RLP} from "ethers/lib/utils";
+import {generate_plugin_config} from './generate_plugin_config';
+import {parseEther, parseUnits, RLP} from "ethers/lib/utils";
 
 const transactionUploadDelay = 60000;
 
@@ -27,14 +27,14 @@ const NANOS_PLUGIN_PATH = Resolve('elfs/plugin_nanos.elf');
 const NANOSP_PLUGIN_PATH = Resolve('elfs/plugin_nanosp.elf');
 const NANOX_PLUGIN_PATH = Resolve('elfs/plugin_nanox.elf');
 
-const nano_models: DeviceModel[] = [
-    { name: 'nanos', letter: 'S', path: NANOS_PLUGIN_PATH, eth_path: NANOS_ETH_PATH },
-    { name: 'nanosp', letter: 'SP', path: NANOSP_PLUGIN_PATH, eth_path: NANOSP_ETH_PATH },
-    { name: 'nanox', letter: 'X', path: NANOX_PLUGIN_PATH, eth_path: NANOX_ETH_PATH }
+const nano_models = [
+    {name: 'nanos', letter: 'S', path: NANOS_PLUGIN_PATH, eth_path: NANOS_ETH_PATH},
+    {name: 'nanosp', letter: 'SP', path: NANOSP_PLUGIN_PATH, eth_path: NANOSP_ETH_PATH},
+    {name: 'nanox', letter: 'X', path: NANOX_PLUGIN_PATH, eth_path: NANOX_ETH_PATH}
 ];
 
 
-const boilerplateJSON = generate_plugin_config();
+const rocketpoolJSON = generate_plugin_config();
 
 const SPECULOS_ADDRESS = '0xFE984369CE3919AA7BB4F431082D027B4F8ED70C';
 const RANDOM_ADDRESS = '0xaaaabbbbccccddddeeeeffffgggghhhhiiiijjjj'
@@ -87,8 +87,7 @@ function zemu(device, func) {
         let elf_path;
         let lib_elf;
         elf_path = device.eth_path;
-        // Edit this: replace `Boilerplate` by your plugin name
-        lib_elf = { 'Boilerplate': device.path };
+        lib_elf = {'RocketPool': device.path};
 
         const sim = new Zemu(elf_path, lib_elf);
         try {
@@ -97,7 +96,7 @@ function zemu(device, func) {
             const eth = new Eth(transport);
             eth.setLoadConfig({
                 baseURL: null,
-                extraPlugins: boilerplateJSON,
+                extraPlugins: rocketpoolJSON,
             });
             await func(sim, eth);
         } finally {

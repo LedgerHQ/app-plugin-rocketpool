@@ -1,32 +1,75 @@
-# app-plugin-boilerplate
+# ledger-app-plugin-rocketpool
 
-This repo is a meant to be a forkable example of a plugin.
+This repo contains a Ledger Ethereum plugin to support the various Rocket Pool interactions.
 
-Plugins are lightweight applications that go hand-in-hand with the Ethereum
-Application on a Nano S / X device.
+Instructions on plugin development can be found in the
+[plugin guide](https://developers.ledger.com/docs/dapp/nano-plugin/overview/).
 
-They allow users to safely interact with smart contracts by parsing the
-transaction data and displaying its content in a human readable way. This is
-done on a "per contract" basis, meaning a plugin is required for every DApp.
+## Installation
 
-The code has been commented, and special "EDIT THIS" comments indicate where
-developers are expected to adapt the code to their own needs.
+Clone this repository and it's dependencies into the same directory:
 
-It is STRONGLY recommended to follow the
-[plugin guide](https://developers.ledger.com/docs/dapp/nano-plugin/overview/)
-in order to better understand the flow and the context for plugins.
+```bash
+git clone https://github.com/rocket-pool/ledger-app-plugin-rocketpool.git
+git clone https://github.com/LedgerHQ/plugin-tools.git
+git clone --recurse-submodules https://github.com/LedgerHQ/app-ethereum.git
+```
 
-## Ethereum SDK
+Your directory should look like this:
 
-Ethereum plugins need the [Ethereum SDK](https://github.com/LedgerHQ/ethereum-plugin-sdk).
-You can use the `ETHEREUM_PLUGIN_SDK` variable to point to the directory where you cloned
-this repository. By default, the `Makefile` expects it to be at the root directory of this
-plugin repository, by the `ethereum-plugin-sdk` name.
+```
+app-ethereum
+ledger-app-plugin-rocketpool
+plugin-tools
+```
 
-This repository is deliberately **not** a submodule. You can see that the CI workflows
-clone and checkout either the latest `master` or on `develop` references. This ensures
-the code is compiled and tested on the latest version of the SDK.
+## Building
 
-## Formatting
+Navigate into the `plugin-tools` directory and run the `./start.sh` shell script:
 
-The C source code is expected to be formatted with `clang-format` 11.0.0 or higher.
+```bash
+cd plugin-tools
+./start.sh
+```
+
+This script setups up a docker container with everything required to build the plugin. You will be dropped into an
+interactive shell when the script completes.
+
+Navigate into the `ledger-app-plugin-rocketpool` directory and run `make`:
+
+```bash
+cd ledger-app-plugin-rocketpool
+make
+```
+
+The build artifacts will be placed in the `build/` directory.
+
+## Testing
+
+Navigate into the `plugin-tools` directory and run the `./start.sh` shell script:
+
+```bash
+cd plugin-tools
+./start.sh
+```
+
+This script setups up a docker container with everything required to build the plugin. You will be dropped into an
+interactive shell when the script completes.
+
+Navigate into the `ledger-app-plugin-rocketpool/test` directory and run `./build_local_test_elfs.sh`:
+
+```bash
+cd ledger-app-plugin-rocketpool/test
+./build_local_test_elfs.sh
+```
+
+This will generate test binaries that can be run on the Speculos emulator.
+
+In another terminal, navigate to the same `test` directory and run `yarn test`. 
+
+```bash
+cd ledger-app-plugin-rocketpool/test
+yarn install                      # On the first run of the test suite, install dependencies first
+yarn test
+```
+

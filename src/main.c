@@ -22,19 +22,33 @@
 #include "os.h"
 #include "cx.h"
 
-#include "boilerplate_plugin.h"
+#include "rocketpool_plugin.h"
 
 // List of selectors supported by this plugin.
-// EDIT THIS: Adapt the variable names and change the `0x` values to match your selectors.
-static const uint32_t SWAP_EXACT_ETH_FOR_TOKENS_SELECTOR = 0x7ff36ab5;
-static const uint32_t BOILERPLATE_DUMMY_SELECTOR_2 = 0x13374242;
+static const uint32_t DEPOSIT_SELECTOR = 0xd0e30db0;
+static const uint32_t BURN_SELECTOR = 0x42966c68;
+static const uint32_t SET_WITHDRAWAL_ADDRESS_SELECTOR = 0xa543ccea;
+static const uint32_t CONFIRM_WITHDRAWAL_ADDRESS_SELECTOR = 0xbd439126;
+static const uint32_t STAKE_RPL_FOR_SELECTOR = 0xcb1c8321;
+static const uint32_t STAKE_RPL_SELECTOR = 0x3e200d4b;
+static const uint32_t UNSTAKE_RPL_SELECTOR = 0x6b088d5c;
+static const uint32_t SWAP_TOKENS_SELECTOR = 0xfe784eaa;
+static const uint32_t SWAP_TO_SELECTOR = 0x55362f4d;
+static const uint32_t SWAP_FROM_SELECTOR = 0xa824ae8b;
 
-// Array of all the different boilerplate selectors. Make sure this follows the same order as the
-// enum defined in `boilerplate_plugin.h`
-// EDIT THIS: Use the names of the array declared above.
-const uint32_t BOILERPLATE_SELECTORS[NUM_SELECTORS] = {
-    SWAP_EXACT_ETH_FOR_TOKENS_SELECTOR,
-    BOILERPLATE_DUMMY_SELECTOR_2,
+// Array of all the different Rocket Pool selectors. Make sure this follows the same order as the
+// enum defined in `rocketpool_plugin.h`
+const uint32_t ROCKETPOOL_SELECTORS[NUM_SELECTORS] = {
+    DEPOSIT_SELECTOR,
+    BURN_SELECTOR,
+    SET_WITHDRAWAL_ADDRESS_SELECTOR,
+    CONFIRM_WITHDRAWAL_ADDRESS_SELECTOR,
+    STAKE_RPL_FOR_SELECTOR,
+    STAKE_RPL_SELECTOR,
+    UNSTAKE_RPL_SELECTOR,
+    SWAP_TOKENS_SELECTOR,
+    SWAP_TO_SELECTOR,
+    SWAP_FROM_SELECTOR
 };
 
 // Function to dispatch calls from the ethereum app.

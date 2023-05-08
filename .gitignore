@@ -5,6 +5,7 @@ bin/
 debug/
 dep/
 obj/
+build/
 
 # Editors
 .idea/
@@ -22,3 +23,4 @@ __pycache__/
 tests/node_modules
 tests/lib
 tests/elfs
+tests/snapshots-tmp
