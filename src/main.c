@@ -38,18 +38,16 @@ static const uint32_t SWAP_FROM_SELECTOR = 0xa824ae8b;
 
 // Array of all the different Rocket Pool selectors. Make sure this follows the same order as the
 // enum defined in `rocketpool_plugin.h`
-const uint32_t ROCKETPOOL_SELECTORS[NUM_SELECTORS] = {
-    DEPOSIT_SELECTOR,
-    BURN_SELECTOR,
-    SET_WITHDRAWAL_ADDRESS_SELECTOR,
-    CONFIRM_WITHDRAWAL_ADDRESS_SELECTOR,
-    STAKE_RPL_FOR_SELECTOR,
-    STAKE_RPL_SELECTOR,
-    UNSTAKE_RPL_SELECTOR,
-    SWAP_TOKENS_SELECTOR,
-    SWAP_TO_SELECTOR,
-    SWAP_FROM_SELECTOR
-};
+const uint32_t ROCKETPOOL_SELECTORS[NUM_SELECTORS] = {DEPOSIT_SELECTOR,
+                                                      BURN_SELECTOR,
+                                                      SET_WITHDRAWAL_ADDRESS_SELECTOR,
+                                                      CONFIRM_WITHDRAWAL_ADDRESS_SELECTOR,
+                                                      STAKE_RPL_FOR_SELECTOR,
+                                                      STAKE_RPL_SELECTOR,
+                                                      UNSTAKE_RPL_SELECTOR,
+                                                      SWAP_TOKENS_SELECTOR,
+                                                      SWAP_TO_SELECTOR,
+                                                      SWAP_FROM_SELECTOR};
 
 // Function to dispatch calls from the ethereum app.
 void dispatch_plugin_calls(int message, void *parameters) {

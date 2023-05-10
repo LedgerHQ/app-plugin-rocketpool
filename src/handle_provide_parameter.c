@@ -13,7 +13,9 @@ static bool handle_offset(ethPluginProvideParameter_t *msg, context_t *context) 
 static void handle_burn(ethPluginProvideParameter_t *msg, context_t *context) {
     switch (context->next_param) {
         case BURN__AMOUNT:
-            copy_parameter(&context->selector.burn.amount, msg->parameter, sizeof(context->selector.burn.amount));
+            copy_parameter(&context->selector.burn.amount,
+                           msg->parameter,
+                           sizeof(context->selector.burn.amount));
             context->next_param = UNEXPECTED_PARAMETER;
             break;
         default:
@@ -26,15 +28,21 @@ static void handle_burn(ethPluginProvideParameter_t *msg, context_t *context) {
 static void handle_set_withdrawal_address(ethPluginProvideParameter_t *msg, context_t *context) {
     switch (context->next_param) {
         case SET_WITHDRAWAL_ADDRESS__NODE_ADDRESS:
-            copy_address(&context->selector.set_withdrawal_address.node_address, msg->parameter, sizeof(context->selector.set_withdrawal_address.node_address));
+            copy_address(&context->selector.set_withdrawal_address.node_address,
+                         msg->parameter,
+                         sizeof(context->selector.set_withdrawal_address.node_address));
             context->next_param = SET_WITHDRAWAL_ADDRESS__NEW_WITHDRAWAL_ADDRESS;
             break;
         case SET_WITHDRAWAL_ADDRESS__NEW_WITHDRAWAL_ADDRESS:
-            copy_address(&context->selector.set_withdrawal_address.new_withdrawal_address, msg->parameter, sizeof(context->selector.set_withdrawal_address.new_withdrawal_address));
+            copy_address(&context->selector.set_withdrawal_address.new_withdrawal_address,
+                         msg->parameter,
+                         sizeof(context->selector.set_withdrawal_address.new_withdrawal_address));
             context->next_param = SET_WITHDRAWAL_ADDRESS__CONFIRM;
             break;
         case SET_WITHDRAWAL_ADDRESS__CONFIRM:
-            copy_parameter(&context->selector.set_withdrawal_address.confirm, msg->parameter, sizeof(context->selector.set_withdrawal_address.confirm));
+            copy_parameter(&context->selector.set_withdrawal_address.confirm,
+                           msg->parameter,
+                           sizeof(context->selector.set_withdrawal_address.confirm));
             context->next_param = UNEXPECTED_PARAMETER;
             break;
         default:
@@ -44,10 +52,13 @@ static void handle_set_withdrawal_address(ethPluginProvideParameter_t *msg, cont
     }
 }
 
-static void handle_confirm_withdrawal_address(ethPluginProvideParameter_t *msg, context_t *context) {
+static void handle_confirm_withdrawal_address(ethPluginProvideParameter_t *msg,
+                                              context_t *context) {
     switch (context->next_param) {
         case CONFIRM_WITHDRAWAL_ADDRESS__NODE_ADDRESS:
-            copy_address(&context->selector.confirm_withdrawal_address.node_address, msg->parameter, sizeof(context->selector.confirm_withdrawal_address.node_address));
+            copy_address(&context->selector.confirm_withdrawal_address.node_address,
+                         msg->parameter,
+                         sizeof(context->selector.confirm_withdrawal_address.node_address));
             context->next_param = UNEXPECTED_PARAMETER;
             break;
         default:
@@ -60,11 +71,15 @@ static void handle_confirm_withdrawal_address(ethPluginProvideParameter_t *msg, 
 static void handle_stake_rpl_for(ethPluginProvideParameter_t *msg, context_t *context) {
     switch (context->next_param) {
         case STAKE_RPL_FOR__NODE_ADDRESS:
-            copy_address(&context->selector.stake_rpl_for.node_address, msg->parameter, sizeof(context->selector.stake_rpl_for.node_address));
+            copy_address(&context->selector.stake_rpl_for.node_address,
+                         msg->parameter,
+                         sizeof(context->selector.stake_rpl_for.node_address));
             context->next_param = STAKE_RPL_FOR__AMOUNT;
             break;
         case STAKE_RPL_FOR__AMOUNT:
-            copy_parameter(&context->selector.stake_rpl_for.amount, msg->parameter, sizeof(context->selector.stake_rpl_for.amount));
+            copy_parameter(&context->selector.stake_rpl_for.amount,
+                           msg->parameter,
+                           sizeof(context->selector.stake_rpl_for.amount));
             context->next_param = UNEXPECTED_PARAMETER;
             break;
         default:
@@ -77,7 +92,9 @@ static void handle_stake_rpl_for(ethPluginProvideParameter_t *msg, context_t *co
 static void handle_stake_rpl(ethPluginProvideParameter_t *msg, context_t *context) {
     switch (context->next_param) {
         case STAKE_RPL__AMOUNT:
-            copy_parameter(&context->selector.stake_rpl.amount, msg->parameter, sizeof(context->selector.stake_rpl.amount));
+            copy_parameter(&context->selector.stake_rpl.amount,
+                           msg->parameter,
+                           sizeof(context->selector.stake_rpl.amount));
             context->next_param = UNEXPECTED_PARAMETER;
             break;
         default:
@@ -90,7 +107,9 @@ static void handle_stake_rpl(ethPluginProvideParameter_t *msg, context_t *contex
 static void handle_unstake_rpl(ethPluginProvideParameter_t *msg, context_t *context) {
     switch (context->next_param) {
         case UNSTAKE_RPL__AMOUNT:
-            copy_parameter(&context->selector.unstake_rpl.amount, msg->parameter, sizeof(context->selector.unstake_rpl.amount));
+            copy_parameter(&context->selector.unstake_rpl.amount,
+                           msg->parameter,
+                           sizeof(context->selector.unstake_rpl.amount));
             context->next_param = UNEXPECTED_PARAMETER;
             break;
         default:
@@ -103,7 +122,9 @@ static void handle_unstake_rpl(ethPluginProvideParameter_t *msg, context_t *cont
 static void handle_swap_tokens(ethPluginProvideParameter_t *msg, context_t *context) {
     switch (context->next_param) {
         case SWAP_TOKENS__AMOUNT:
-            copy_parameter(&context->selector.swap_tokens.amount, msg->parameter, sizeof(context->selector.swap_tokens.amount));
+            copy_parameter(&context->selector.swap_tokens.amount,
+                           msg->parameter,
+                           sizeof(context->selector.swap_tokens.amount));
             context->next_param = UNEXPECTED_PARAMETER;
             break;
         default:
@@ -139,7 +160,9 @@ static void handle_swap_from(ethPluginProvideParameter_t *msg, context_t *contex
             context->next_param++;
             break;
         case SWAP_FROM__TOKENS_IN:
-            copy_parameter(&context->selector.swap_from.amount, msg->parameter, sizeof(context->selector.swap_from.amount));
+            copy_parameter(&context->selector.swap_from.amount,
+                           msg->parameter,
+                           sizeof(context->selector.swap_from.amount));
             context->next_param = UNEXPECTED_PARAMETER;
             break;
         default:

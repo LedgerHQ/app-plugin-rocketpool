@@ -117,7 +117,8 @@ typedef struct context_t {
     uint8_t num_screens;
     uint8_t next_param;  // Set to be the next param we expect to parse.
     uint16_t offset;     // Offset at which the array or struct starts.
-    bool go_to_offset;   // If set, will force the parsing to iterate through parameters until `offset` is reached.
+    bool go_to_offset;   // If set, will force the parsing to iterate through parameters until
+                         // `offset` is reached.
 
     // Selector specific context
     union {
@@ -133,7 +134,8 @@ typedef struct context_t {
 
 } context_t;
 
-// Piece of code that will check that the above structure is not bigger than 5 * 32. Do not remove this check.
+// Piece of code that will check that the above structure is not bigger than 5 * 32. Do not remove
+// this check.
 _Static_assert(sizeof(context_t) <= 5 * 32, "Structure of parameters too big.");
 
 void handle_provide_parameter(void *parameters);
