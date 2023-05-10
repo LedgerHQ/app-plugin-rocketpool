@@ -11,7 +11,7 @@ void handle_query_contract_id(void *parameters) {
     // For the first screen, display the plugin name.
     strlcpy(msg->name, PLUGIN_NAME, msg->nameLength);
 
-    switch(context->selectorIndex) {
+    switch (context->selectorIndex) {
         case DEPOSIT:
         case SWAP_TO:
             strlcpy(msg->version, "Stake", msg->versionLength);
