@@ -30,7 +30,7 @@ static void handle_set_withdrawal_address(ethPluginProvideParameter_t *msg, cont
             context->next_param = SET_WITHDRAWAL_ADDRESS__CONFIRM;
             break;
         case SET_WITHDRAWAL_ADDRESS__CONFIRM:
-            copy_parameter(context->selector.set_withdrawal_address.confirm,
+            copy_parameter((uint8_t *) &context->selector.set_withdrawal_address.confirm,
                            msg->parameter,
                            sizeof(context->selector.set_withdrawal_address.confirm));
             context->next_param = UNEXPECTED_PARAMETER;
