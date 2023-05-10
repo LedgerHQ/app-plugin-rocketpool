@@ -1,6 +1,6 @@
 #include "rocketpool_plugin.h"
 
-void handle_deposit_ui(ethQueryContractUI_t *msg, context_t *context) {
+void handle_deposit_ui(ethQueryContractUI_t *msg) {
     switch (msg->screenIndex) {
         case 0:
             strlcpy(msg->title, "Amount", msg->titleLength);
@@ -219,7 +219,7 @@ void handle_swap_tokens_ui(ethQueryContractUI_t *msg, context_t *context) {
     msg->result = ETH_PLUGIN_RESULT_OK;
 }
 
-void handle_swap_to_ui(ethQueryContractUI_t *msg, context_t *context) {
+void handle_swap_to_ui(ethQueryContractUI_t *msg) {
     switch (msg->screenIndex) {
         case 0:
             strlcpy(msg->title, "Amount", msg->titleLength);
@@ -280,7 +280,7 @@ void handle_query_contract_ui(void *parameters) {
 
     switch (context->selectorIndex) {
         case DEPOSIT:
-            handle_deposit_ui(msg, context);
+            handle_deposit_ui(msg);
             break;
         case BURN:
             handle_burn_ui(msg, context);
@@ -304,7 +304,7 @@ void handle_query_contract_ui(void *parameters) {
             handle_swap_tokens_ui(msg, context);
             break;
         case SWAP_TO:
-            handle_swap_to_ui(msg, context);
+            handle_swap_to_ui(msg);
             break;
         case SWAP_FROM:
             handle_swap_from_ui(msg, context);
