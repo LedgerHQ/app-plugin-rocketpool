@@ -13,11 +13,13 @@ void handle_query_contract_id(void *parameters) {
 
     switch (context->selectorIndex) {
         case DEPOSIT:
+            // Intentional fallthrough
         case SWAP_TO:
             strlcpy(msg->version, "Stake", msg->versionLength);
             msg->result = ETH_PLUGIN_RESULT_OK;
             break;
         case BURN:
+            // Intentional fallthrough
         case SWAP_FROM:
             strlcpy(msg->version, "Unstake", msg->versionLength);
             msg->result = ETH_PLUGIN_RESULT_OK;
