@@ -49,6 +49,13 @@ void handle_burn_ui(ethQueryContractUI_t *msg, context_t *context) {
 }
 
 void handle_set_withdrawal_address_ui(ethQueryContractUI_t *msg, context_t *context) {
+    // Ensure buffer is big enough to write address prefixed with 0x
+    if (msg->msgLength < ETHEREUM_ADDRESS_LENGTH) {
+        PRINTF("Buffer too small\n");
+        msg->result = ETH_PLUGIN_RESULT_ERROR;
+        return;
+    }
+
     switch (msg->screenIndex) {
         case 0:
             strlcpy(msg->title, "Node Addr", msg->titleLength);
@@ -95,6 +102,13 @@ void handle_set_withdrawal_address_ui(ethQueryContractUI_t *msg, context_t *cont
 }
 
 void handle_confirm_withdrawal_address_ui(ethQueryContractUI_t *msg, context_t *context) {
+    // Ensure buffer is big enough to write address prefixed with 0x
+    if (msg->msgLength < ETHEREUM_ADDRESS_LENGTH) {
+        PRINTF("Buffer too small\n");
+        msg->result = ETH_PLUGIN_RESULT_ERROR;
+        return;
+    }
+
     switch (msg->screenIndex) {
         case 0:
             strlcpy(msg->title, "Node Addr", msg->titleLength);
@@ -119,6 +133,13 @@ void handle_confirm_withdrawal_address_ui(ethQueryContractUI_t *msg, context_t *
 }
 
 void handle_stake_rpl_for_ui(ethQueryContractUI_t *msg, context_t *context) {
+    // Ensure buffer is big enough to write address prefixed with 0x
+    if (msg->msgLength < ETHEREUM_ADDRESS_LENGTH) {
+        PRINTF("Buffer too small\n");
+        msg->result = ETH_PLUGIN_RESULT_ERROR;
+        return;
+    }
+
     switch (msg->screenIndex) {
         case 0:
             strlcpy(msg->title, "Node Addr", msg->titleLength);

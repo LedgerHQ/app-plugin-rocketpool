@@ -4,6 +4,9 @@
 #include "eth_plugin_interface.h"
 #include <string.h>
 
+// Ethereum address length with 0x prefix
+#define ETHEREUM_ADDRESS_LENGTH 42
+
 // Number of selectors defined in this plugin. Should match the enum `selector_t`.
 #define NUM_SELECTORS 10
 
