@@ -36,7 +36,8 @@ void handle_init_contract(void *parameters) {
     memset(context, 0, sizeof(*context));
 
     uint32_t selector = U4BE(msg->selector, 0);
-    if (find_selector(selector, ROCKETPOOL_SELECTORS, NUM_SELECTORS, &context->selectorIndex) != 0) {
+    if (find_selector(selector, ROCKETPOOL_SELECTORS, NUM_SELECTORS, &context->selectorIndex) !=
+        0) {
         msg->result = ETH_PLUGIN_RESULT_UNAVAILABLE;
         return;
     }
