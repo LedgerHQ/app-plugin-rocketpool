@@ -25,7 +25,7 @@ include $(BOLOS_SDK)/Makefile.defines
 #        Mandatory configuration       #
 ########################################
 # Application name
-APPNAME = "RocketPool"
+APPNAME = "Rocket Pool"
 
 # Application version
 APPVERSION_M = 1
