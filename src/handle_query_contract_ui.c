@@ -1,6 +1,9 @@
+#include <stdbool.h>
 #include "rocketpool_plugin.h"
 
-void handle_deposit_ui(ethQueryContractUI_t *msg) {
+bool handle_deposit_ui(ethQueryContractUI_t *msg) {
+    bool ret = false;
+
     switch (msg->screenIndex) {
         case 0:
             strlcpy(msg->title, "Amount", msg->titleLength);
@@ -10,50 +13,47 @@ void handle_deposit_ui(ethQueryContractUI_t *msg) {
 
             // Converts the uint256 number located in `eth_amount` to its string representation and
             // copies this to `msg->msg`.
-            amountToString(eth_amount,
-                           eth_amount_size,
-                           WEI_TO_ETHER,
-                           "ETH",
-                           msg->msg,
-                           msg->msgLength);
+            ret = amountToString(eth_amount,
+                                 eth_amount_size,
+                                 WEI_TO_ETHER,
+                                 "ETH",
+                                 msg->msg,
+                                 msg->msgLength);
             break;
         default:
             PRINTF("Received an invalid screenIndex\n");
-            msg->result = ETH_PLUGIN_RESULT_ERROR;
-            return;
     }
-
-    msg->result = ETH_PLUGIN_RESULT_OK;
+    return ret;
 }
 
-void handle_burn_ui(ethQueryContractUI_t *msg, context_t *context) {
+bool handle_burn_ui(ethQueryContractUI_t *msg, context_t *context) {
+    bool ret = false;
+
     switch (msg->screenIndex) {
         case 0:
             strlcpy(msg->title, "Amount", msg->titleLength);
 
             const uint8_t *reth_amount = context->selector.burn.amount;
-            amountToString(reth_amount,
-                           INT256_LENGTH,
-                           WEI_TO_ETHER,
-                           "rETH",
-                           msg->msg,
-                           msg->msgLength);
+            ret = amountToString(reth_amount,
+                                 INT256_LENGTH,
+                                 WEI_TO_ETHER,
+                                 "rETH",
+                                 msg->msg,
+                                 msg->msgLength);
             break;
         default:
             PRINTF("Received an invalid screenIndex\n");
-            msg->result = ETH_PLUGIN_RESULT_ERROR;
-            return;
     }
-
-    msg->result = ETH_PLUGIN_RESULT_OK;
+    return ret;
 }
 
-void handle_set_withdrawal_address_ui(ethQueryContractUI_t *msg, context_t *context) {
+bool handle_set_withdrawal_address_ui(ethQueryContractUI_t *msg, context_t *context) {
+    bool ret = false;
+
     // Ensure buffer is big enough to write address prefixed with 0x
     if (msg->msgLength < ETHEREUM_ADDRESS_LENGTH) {
         PRINTF("Buffer too small\n");
-        msg->result = ETH_PLUGIN_RESULT_ERROR;
-        return;
+        return false;
     }
 
     switch (msg->screenIndex) {
@@ -64,7 +64,7 @@ void handle_set_withdrawal_address_ui(ethQueryContractUI_t *msg, context_t *cont
             msg->msg[0] = '0';
             msg->msg[1] = 'x';
 
-            getEthAddressStringFromBinary(
+            ret = getEthAddressStringFromBinary(
                 context->selector.set_withdrawal_address.node_address,
                 msg->msg + 2,  // +2 here because we've already prefixed with '0x'.
                 msg->pluginSharedRW->sha3,
@@ -77,7 +77,7 @@ void handle_set_withdrawal_address_ui(ethQueryContractUI_t *msg, context_t *cont
             msg->msg[0] = '0';
             msg->msg[1] = 'x';
 
-            getEthAddressStringFromBinary(
+            ret = getEthAddressStringFromBinary(
                 context->selector.set_withdrawal_address.new_withdrawal_address,
                 msg->msg + 2,  // +2 here because we've already prefixed with '0x'.
                 msg->pluginSharedRW->sha3,
@@ -91,22 +91,21 @@ void handle_set_withdrawal_address_ui(ethQueryContractUI_t *msg, context_t *cont
             } else {
                 strlcpy(msg->msg, "No", msg->titleLength);
             }
+            ret = true;
             break;
         default:
             PRINTF("Received an invalid screenIndex\n");
-            msg->result = ETH_PLUGIN_RESULT_ERROR;
-            return;
     }
-
-    msg->result = ETH_PLUGIN_RESULT_OK;
+    return ret;
 }
 
-void handle_confirm_withdrawal_address_ui(ethQueryContractUI_t *msg, context_t *context) {
+bool handle_confirm_withdrawal_address_ui(ethQueryContractUI_t *msg, context_t *context) {
+    bool ret = false;
+
     // Ensure buffer is big enough to write address prefixed with 0x
     if (msg->msgLength < ETHEREUM_ADDRESS_LENGTH) {
         PRINTF("Buffer too small\n");
-        msg->result = ETH_PLUGIN_RESULT_ERROR;
-        return;
+        return false;
     }
 
     switch (msg->screenIndex) {
@@ -117,7 +116,7 @@ void handle_confirm_withdrawal_address_ui(ethQueryContractUI_t *msg, context_t *
             msg->msg[0] = '0';
             msg->msg[1] = 'x';
 
-            getEthAddressStringFromBinary(
+            ret = getEthAddressStringFromBinary(
                 context->selector.confirm_withdrawal_address.node_address,
                 msg->msg + 2,  // +2 here because we've already prefixed with '0x'.
                 msg->pluginSharedRW->sha3,
@@ -125,19 +124,17 @@ void handle_confirm_withdrawal_address_ui(ethQueryContractUI_t *msg, context_t *
             break;
         default:
             PRINTF("Received an invalid screenIndex\n");
-            msg->result = ETH_PLUGIN_RESULT_ERROR;
-            return;
     }
-
-    msg->result = ETH_PLUGIN_RESULT_OK;
+    return ret;
 }
 
-void handle_stake_rpl_for_ui(ethQueryContractUI_t *msg, context_t *context) {
+bool handle_stake_rpl_for_ui(ethQueryContractUI_t *msg, context_t *context) {
+    bool ret = false;
+
     // Ensure buffer is big enough to write address prefixed with 0x
     if (msg->msgLength < ETHEREUM_ADDRESS_LENGTH) {
         PRINTF("Buffer too small\n");
-        msg->result = ETH_PLUGIN_RESULT_ERROR;
-        return;
+        return false;
     }
 
     switch (msg->screenIndex) {
@@ -148,7 +145,7 @@ void handle_stake_rpl_for_ui(ethQueryContractUI_t *msg, context_t *context) {
             msg->msg[0] = '0';
             msg->msg[1] = 'x';
 
-            getEthAddressStringFromBinary(
+            ret = getEthAddressStringFromBinary(
                 context->selector.confirm_withdrawal_address.node_address,
                 msg->msg + 2,  // +2 here because we've already prefixed with '0x'.
                 msg->pluginSharedRW->sha3,
@@ -158,89 +155,85 @@ void handle_stake_rpl_for_ui(ethQueryContractUI_t *msg, context_t *context) {
             strlcpy(msg->title, "Amount", msg->titleLength);
 
             const uint8_t *rpl_amount = context->selector.stake_rpl_for.amount;
-            amountToString(rpl_amount,
-                           INT256_LENGTH,
-                           WEI_TO_ETHER,
-                           "RPL",
-                           msg->msg,
-                           msg->msgLength);
+            ret = amountToString(rpl_amount,
+                                 INT256_LENGTH,
+                                 WEI_TO_ETHER,
+                                 "RPL",
+                                 msg->msg,
+                                 msg->msgLength);
             break;
         default:
             PRINTF("Received an invalid screenIndex\n");
-            msg->result = ETH_PLUGIN_RESULT_ERROR;
-            return;
     }
-
-    msg->result = ETH_PLUGIN_RESULT_OK;
+    return ret;
 }
 
-void handle_stake_rpl_ui(ethQueryContractUI_t *msg, context_t *context) {
+bool handle_stake_rpl_ui(ethQueryContractUI_t *msg, context_t *context) {
+    bool ret = false;
+
     switch (msg->screenIndex) {
         case 0:
             strlcpy(msg->title, "Amount", msg->titleLength);
 
             const uint8_t *rpl_amount = context->selector.stake_rpl.amount;
-            amountToString(rpl_amount,
-                           INT256_LENGTH,
-                           WEI_TO_ETHER,
-                           "RPL",
-                           msg->msg,
-                           msg->msgLength);
+            ret = amountToString(rpl_amount,
+                                 INT256_LENGTH,
+                                 WEI_TO_ETHER,
+                                 "RPL",
+                                 msg->msg,
+                                 msg->msgLength);
             break;
         default:
             PRINTF("Received an invalid screenIndex\n");
-            msg->result = ETH_PLUGIN_RESULT_ERROR;
-            return;
     }
-
-    msg->result = ETH_PLUGIN_RESULT_OK;
+    return ret;
 }
 
-void handle_unstake_rpl_ui(ethQueryContractUI_t *msg, context_t *context) {
+bool handle_unstake_rpl_ui(ethQueryContractUI_t *msg, context_t *context) {
+    bool ret = false;
+
     switch (msg->screenIndex) {
         case 0:
             strlcpy(msg->title, "Amount", msg->titleLength);
 
             const uint8_t *rpl_amount = context->selector.unstake_rpl.amount;
-            amountToString(rpl_amount,
-                           INT256_LENGTH,
-                           WEI_TO_ETHER,
-                           "RPL",
-                           msg->msg,
-                           msg->msgLength);
+            ret = amountToString(rpl_amount,
+                                 INT256_LENGTH,
+                                 WEI_TO_ETHER,
+                                 "RPL",
+                                 msg->msg,
+                                 msg->msgLength);
             break;
         default:
             PRINTF("Received an invalid screenIndex\n");
-            msg->result = ETH_PLUGIN_RESULT_ERROR;
-            return;
     }
-
-    msg->result = ETH_PLUGIN_RESULT_OK;
+    return ret;
 }
 
-void handle_swap_tokens_ui(ethQueryContractUI_t *msg, context_t *context) {
+bool handle_swap_tokens_ui(ethQueryContractUI_t *msg, context_t *context) {
+    bool ret = false;
+
     switch (msg->screenIndex) {
         case 0:
             strlcpy(msg->title, "Amount", msg->titleLength);
 
             const uint8_t *rpl_amount = context->selector.swap_tokens.amount;
-            amountToString(rpl_amount,
-                           INT256_LENGTH,
-                           WEI_TO_ETHER,
-                           "RPL",
-                           msg->msg,
-                           msg->msgLength);
+            ret = amountToString(rpl_amount,
+                                 INT256_LENGTH,
+                                 WEI_TO_ETHER,
+                                 "RPL",
+                                 msg->msg,
+                                 msg->msgLength);
             break;
         default:
             PRINTF("Received an invalid screenIndex\n");
-            msg->result = ETH_PLUGIN_RESULT_ERROR;
-            return;
     }
-
-    msg->result = ETH_PLUGIN_RESULT_OK;
+    return ret;
 }
 
-void handle_swap_to_ui(ethQueryContractUI_t *msg) {
+bool handle_swap_to_ui(ethQueryContractUI_t *msg) {
+    bool ret = false;
+
     switch (msg->screenIndex) {
         case 0:
             strlcpy(msg->title, "Amount", msg->titleLength);
@@ -250,47 +243,43 @@ void handle_swap_to_ui(ethQueryContractUI_t *msg) {
 
             // Converts the uint256 number located in `eth_amount` to its string representation and
             // copies this to `msg->msg`.
-            amountToString(eth_amount,
-                           eth_amount_size,
-                           WEI_TO_ETHER,
-                           "ETH",
-                           msg->msg,
-                           msg->msgLength);
+            ret = amountToString(eth_amount,
+                                 eth_amount_size,
+                                 WEI_TO_ETHER,
+                                 "ETH",
+                                 msg->msg,
+                                 msg->msgLength);
             break;
         default:
             PRINTF("Received an invalid screenIndex\n");
-            msg->result = ETH_PLUGIN_RESULT_ERROR;
-            return;
     }
-
-    msg->result = ETH_PLUGIN_RESULT_OK;
+    return ret;
 }
 
-void handle_swap_from_ui(ethQueryContractUI_t *msg, context_t *context) {
+bool handle_swap_from_ui(ethQueryContractUI_t *msg, context_t *context) {
+    bool ret = false;
+
     switch (msg->screenIndex) {
         case 0:
             strlcpy(msg->title, "Amount", msg->titleLength);
 
             const uint8_t *reth_amount = context->selector.swap_from.amount;
-            amountToString(reth_amount,
-                           INT256_LENGTH,
-                           WEI_TO_ETHER,
-                           "rETH",
-                           msg->msg,
-                           msg->msgLength);
+            ret = amountToString(reth_amount,
+                                 INT256_LENGTH,
+                                 WEI_TO_ETHER,
+                                 "rETH",
+                                 msg->msg,
+                                 msg->msgLength);
             break;
         default:
             PRINTF("Received an invalid screenIndex\n");
-            msg->result = ETH_PLUGIN_RESULT_ERROR;
-            return;
     }
-
-    msg->result = ETH_PLUGIN_RESULT_OK;
+    return ret;
 }
 
-void handle_query_contract_ui(void *parameters) {
-    ethQueryContractUI_t *msg = (ethQueryContractUI_t *) parameters;
+void handle_query_contract_ui(ethQueryContractUI_t *msg) {
     context_t *context = (context_t *) msg->pluginContext;
+    bool ret = false;
 
     // msg->title is the upper line displayed on the device.
     // msg->msg is the lower line displayed on the device.
@@ -301,37 +290,37 @@ void handle_query_contract_ui(void *parameters) {
 
     switch (context->selectorIndex) {
         case DEPOSIT:
-            handle_deposit_ui(msg);
+            ret = handle_deposit_ui(msg);
             break;
         case BURN:
-            handle_burn_ui(msg, context);
+            ret = handle_burn_ui(msg, context);
             break;
         case SET_WITHDRAWAL_ADDRESS:
-            handle_set_withdrawal_address_ui(msg, context);
+            ret = handle_set_withdrawal_address_ui(msg, context);
             break;
         case CONFIRM_WITHDRAWAL_ADDRESS:
-            handle_confirm_withdrawal_address_ui(msg, context);
+            ret = handle_confirm_withdrawal_address_ui(msg, context);
             break;
         case STAKE_RPL_FOR:
-            handle_stake_rpl_for_ui(msg, context);
+            ret = handle_stake_rpl_for_ui(msg, context);
             break;
         case STAKE_RPL:
-            handle_stake_rpl_ui(msg, context);
+            ret = handle_stake_rpl_ui(msg, context);
             break;
         case UNSTAKE_RPL:
-            handle_unstake_rpl_ui(msg, context);
+            ret = handle_unstake_rpl_ui(msg, context);
             break;
         case SWAP_TOKENS:
-            handle_swap_tokens_ui(msg, context);
+            ret = handle_swap_tokens_ui(msg, context);
             break;
         case SWAP_TO:
-            handle_swap_to_ui(msg);
+            ret = handle_swap_to_ui(msg);
             break;
         case SWAP_FROM:
-            handle_swap_from_ui(msg, context);
+            ret = handle_swap_from_ui(msg, context);
             break;
         default:
             PRINTF("Selector index: %d not supported\n", context->selectorIndex);
-            msg->result = ETH_PLUGIN_RESULT_ERROR;
     }
+    msg->result = ret ? ETH_PLUGIN_RESULT_OK : ETH_PLUGIN_RESULT_ERROR;
 }
