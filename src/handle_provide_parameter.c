@@ -162,8 +162,7 @@ static void handle_swap_from(ethPluginProvideParameter_t *msg, context_t *contex
     }
 }
 
-void handle_provide_parameter(void *parameters) {
-    ethPluginProvideParameter_t *msg = (ethPluginProvideParameter_t *) parameters;
+void handle_provide_parameter(ethPluginProvideParameter_t *msg) {
     context_t *context = (context_t *) msg->pluginContext;
 
     // We use `%.*H`: it's a utility function to print bytes. You first give
