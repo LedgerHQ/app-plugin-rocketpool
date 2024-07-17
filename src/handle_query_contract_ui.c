@@ -67,7 +67,6 @@ bool handle_set_withdrawal_address_ui(ethQueryContractUI_t *msg, context_t *cont
             ret = getEthAddressStringFromBinary(
                 context->selector.set_withdrawal_address.node_address,
                 msg->msg + 2,  // +2 here because we've already prefixed with '0x'.
-                msg->pluginSharedRW->sha3,
                 0);
             break;
         case 1:
@@ -80,7 +79,6 @@ bool handle_set_withdrawal_address_ui(ethQueryContractUI_t *msg, context_t *cont
             ret = getEthAddressStringFromBinary(
                 context->selector.set_withdrawal_address.new_withdrawal_address,
                 msg->msg + 2,  // +2 here because we've already prefixed with '0x'.
-                msg->pluginSharedRW->sha3,
                 0);
             break;
         case 2:
@@ -119,7 +117,6 @@ bool handle_confirm_withdrawal_address_ui(ethQueryContractUI_t *msg, context_t *
             ret = getEthAddressStringFromBinary(
                 context->selector.confirm_withdrawal_address.node_address,
                 msg->msg + 2,  // +2 here because we've already prefixed with '0x'.
-                msg->pluginSharedRW->sha3,
                 0);
             break;
         default:
@@ -148,7 +145,6 @@ bool handle_stake_rpl_for_ui(ethQueryContractUI_t *msg, context_t *context) {
             ret = getEthAddressStringFromBinary(
                 context->selector.confirm_withdrawal_address.node_address,
                 msg->msg + 2,  // +2 here because we've already prefixed with '0x'.
-                msg->pluginSharedRW->sha3,
                 0);
             break;
         case 1:
