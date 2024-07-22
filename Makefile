@@ -17,6 +17,10 @@
 
 APPNAME = "Rocket Pool"
 
+# Hardcode variant name rocketpool instead of rocket_pool
+NORMAL_NAME = "rocketpool"
+
+
 # Application version
 APPVERSION_M = 1
 APPVERSION_N = 0
